@@ -112,7 +112,7 @@ case $? in
     
     wget -O "/tmp/workli/bootaa64.efi" "https://github.com/pbatard/uefi-ntfs/releases/latest/download/bootaa64.efi" || error "Failed to download bootaa64.efi from pbatard/uefi-ntfs"
     wget -O "/tmp/workli/ntfs_aa64.efi" "https://github.com/pbatard/ntfs-3g/releases/latest/download/ntfs_aa64.efi" || error "Failed to download ntfs_aa64.efi from pbatard/ntfs-3g"
-    wget -O "/tmp/workli/pe-files.zip" "https://cdn.discordapp.com/attachments/546129764440604705/1087889209433534594/Archive.zip" || error "Failed to download y-pe-files.zip from buddyjojo/workli"
+    wget -O "/tmp/workli/pe-files.zip" "https://github.com/buddyjojo/workli/releases/latest/download/y-pe-files.zip" || error "Failed to download y-pe-files.zip from buddyjojo/workli"
     
     unzip -o /tmp/workli/pe-files.zip -d /tmp/workli/
     
