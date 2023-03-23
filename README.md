@@ -6,6 +6,8 @@
 
 Built for simplicity and compatibility.
 
+# NOTE: The Windows on Rockchip project is currently highly experimental and not much works yet.
+
 #### Full dependency list:
 
 > NOTE: The script gives commands for debian/arch to install these dependencies, this is just a refrence for other distros.
