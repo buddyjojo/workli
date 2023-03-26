@@ -6,7 +6,7 @@
 
 Built for simplicity and compatibility.
 
-# NOTE: The Windows on Rockchip project is currently highly experimental and not much works yet.
+# NOTE: The Windows on Rockchip project is currently highly experimental and not much works yet (see [here](https://worproject.com/guides/how-to-install/on-rockchip#what-works)).
 
 #### Full dependency list:
 
