@@ -27,37 +27,43 @@ error() {
 
 if ! command -v wimupdate &> /dev/null
 then
-    wimtool=" - 'wimtools/wimlib' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install wimtools'; for Arch, run 'sudo pacman -S wimlib')"
+    wimtool=" - 'wimtools/wimlib' package not installed."
+    wimtoold="wimtools "
+    wimtoola="wimlib "
     export requiredep=1
 fi
 
 
 if ! command -v parted &> /dev/null
 then
-    parted=" - 'parted' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install parted'; for Arch, run 'sudo pacman -S parted')"
+    parted=" - 'parted' package not installed."
+    partedp="parted "
     export requiredep=1
 fi
 
 if ! command -v mkfs.ntfs &> /dev/null
 then
-    exfat=" - 'mkfs.ntfs' command not found. Install NTFS support somehow (such as ntfs-3g and ntfsprogs)"
+    exfat=" - 'mkfs.ntfs' command not found."
+    ntfsp="ntfs-3g "
     export requiredep=1
 fi
 
 if ! command -v gawk &> /dev/null
 then
-    gawk=" - 'gawk' command not found. Install it (For Debian and Ubuntu, run 'sudo apt install gawk'; for Arch, run 'sudo pacman -S gawk')"
+    gawk=" - 'gawk' package not installed."
+    gawkp="gawk "
     export requiredep=1
 fi
 
 if ! command -v xmlstarlet &> /dev/null
 then
-    xmlstarle=" - 'xmlstarlet' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install xmlstarlet'; for Arch, run 'sudo pacman -S xmlstarlet')"
+    xmlstarle=" - 'xmlstarlet' package not installed."
+    xmartletp="xmlstarlet "
     export requiredep=1
 fi
 
 if [[ $requiredep == *"1"* ]]; then
-    zenity --title "workli" --info --ok-label="Exit" --text "Manditory dependances:\n\n$wimtool\n\n$parted\n\n$exfat\n\n$gawk\n\n$xmlstarle"
+    zenity --title "workli" --info --ok-label="Exit" --text "Manditory dependances:\n\n$wimtool\n\n$parted\n\n$exfat\n\n$gawk\n\n$xmlstarle\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wimtoold$partedp$ntfsp$gawkp$xmlstarletp\"\n\nFor Arch, run: \"sudo pacman -S $wimtoola$partedp$ntfsp$gawkp$xmlstarletp\""
     exit 1
 else
     debug "All manditory dependances are met!"
@@ -65,19 +71,29 @@ fi
 
 if ! command -v wget &> /dev/null
 then
-    wgeta=" - 'wget' package not installed (used for boot files and uefi files downloading). Install it (For Debian and Ubuntu, run 'sudo apt install wget'; for Arch, run 'sudo pacman -S wget')"
+    wgeta=" - 'wget' package not installed (used for boot files and uefi files downloading)."
+    wgetp="wget "
     export requiredep=1
 fi
 
 if ! command -v aria2c &> /dev/null
 then
-    aria=" - 'aria2c' package not installed (used for esd downloading). Install it (For Debian and Ubuntu, run 'sudo apt install aria2'; for Arch, run 'sudo pacman -S aria2')"
+    aria=" - 'aria2c' package not installed (used for esd downloading)."
+    ariap="aria2 "
     export requiredep=1
 fi
 
 if ! command -v curl &> /dev/null
 then
-    curle=" - 'curl' package not installed (used for esd downloading). Install it (For Debian and Ubuntu, run 'sudo apt install curl'; for Arch, run 'sudo pacman -S curl')"
+    curle=" - 'curl' package not installed (used for esd downloading)."
+    curlp="curl "
+    export requiredep=1
+fi
+
+if ! command -v jq &> /dev/null
+then
+    jqe=" - 'jq' package not installed (used for uefi image downloading)."
+    jqp="jq "
     export requiredep=1
 fi
 
@@ -88,7 +104,7 @@ then
 fi
 
 if [[ $requiredep == *"1"* ]]; then
-    zenity --title "workli" --info --ok-label="Continue" --text "Optional dependances:\n\n$wgeta\n\n$aria\n\n$curle\n\n$rkdevtoola"
+    zenity --title "workli" --info --ok-label="Continue" --text "Optional dependances:\n\n$wgeta\n\n$aria\n\n$curle\n\n$jqe\n\n$rkdevtoola\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wgetp$ariap$curlp$jqp\"\n\nFor Arch, run: \"sudo pacman -S $wgetp$ariap$curlp$jqp\""
 else
     debug "All optional dependances are met!"
 fi
