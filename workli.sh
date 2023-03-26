@@ -232,10 +232,16 @@ case $? in
     
     if [[ $device == *"orange"* ]]; then
         debug "orange pi uefi selected"
-        wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "https://github.com/WillzenZou/edk2-orangepi5/releases/download/v0.3-opi5/RK3588_NOR_FLASH_REL_v0.3-opi5.img" || error "Failed to download RK3588_NOR_FLASH_REL.img"
+        
+        efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "orange")"
+        
+        wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
     else
         debug "rock 5 uefi selected"
-        wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "https://github.com/mariobalanica/edk2-rk35xx/releases/latest/download/RK3588_NOR_FLASH_REL.img" || error "Failed to download RK3588_NOR_FLASH_REL.img"
+        
+        efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "rock")"
+        
+        wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
     fi
     
     
@@ -246,9 +252,9 @@ case $? in
 
     [1])
 
-    zenity --title "workli" --info --ok-label="Next" --text "Download the 'RK3588_NOR_FLASH_REL.img' (not the source code) from:\n <a href='https://github.com/mariobalanica/edk2-rk35xx/releases'>https://github.com/mariobalanica/edk2-rk35xx/releases</a>'"
+    zenity --title "workli" --info --ok-label="Next" --text "Download the img file (not the source code) from:\n <a href='https://github.com/edk2-porting/edk2-rk35xx/releases'>https://github.com/edk2-porting/edk2-rk35xx/releases</a>'"
 
-    efi=$(zenity --title "workli" --entry --text "What's the path to 'RK3588_NOR_FLASH_REL.img'?\n\n E.g. '~/RK3588_NOR_FLASH_REL.img'")
+    efi=$(zenity --title "workli" --entry --text "What's the path to the img file?\n\n E.g. '~/RK3588_NOR_FLASH_REL.img'")
     
     ;;
 
@@ -259,9 +265,9 @@ case $? in
 esac
 
 if [[ -f $efi ]]; then
-    debug "'RK3588_NOR_FLASH_REL.img' found"
+    debug "uefi img found"
 else
-    error "'RK3588_NOR_FLASH_REL.img' does not exist."
+    error "uefi img does not exist."
 fi
 
 zenity --question --title="workli" --text "Do you want to install the UEFI to SPI/EMMC or SD card plugged into host?" --ok-label="SPI" --cancel-label="SD"
