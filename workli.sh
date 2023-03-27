@@ -233,13 +233,13 @@ case $? in
     if [[ $device == *"orange"* ]]; then
         debug "orange pi uefi selected"
         
-        efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "orange")"
+        efiURL="$(curl https://api.github.com/repos/mariobalanica/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "orange")"
         
         wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
     else
         debug "rock 5 uefi selected"
         
-        efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "rock")"
+        efiURL="$(curl https://api.github.com/repos/mariobalanica/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "rock")"
         
         wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
     fi
