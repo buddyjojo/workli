@@ -202,8 +202,11 @@ zenity --question --title="workli" --text "Do you want to flash the uefi bootloa
 
 case $? in
     [0])
-    
 zenity --question --title="workli" --text "Are you installing onto a Rock 5 or Orange pi 5?" --ok-label="Rock" --cancel-label="Orange"
+    # Placeholder
+    ;;
+esac
+
 case $? in
     [0])
     export device="rock"
