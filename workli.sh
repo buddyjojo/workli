@@ -439,18 +439,18 @@ case $dwnopt in
 
 if ! command -v aria2c &> /dev/null
 then
-    aria=" - 'aria2c' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install aria2'; for Arch, run 'sudo pacman -S aria2')"
+    aria=" - 'aria2c' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install aria2'; for Arch, run 'sudo pacman -S aria2')\n\n"
     export requiredep=1
 fi
 
 if ! command -v curl &> /dev/null
 then
-    curle=" - 'curl' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install curl'; for Arch, run 'sudo pacman -S curl')"
+    curle=" - 'curl' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install curl'; for Arch, run 'sudo pacman -S curl')\n\n"
     export requiredep=1
 fi
 
 if [[ $requiredep == *"1"* ]]; then
-    zenity --title "workli" --info --ok-label="Exit" --text "Dependencies\n\n$aria\n\n$curle"
+    zenity --title "workli" --info --ok-label="Exit" --text "Dependencies:\n\n$aria$curle"
     exit 1
 else
     debug "All dependencies are met!"
@@ -587,48 +587,48 @@ export esd=1
 
 if ! command -v curl &> /dev/null
 then
-    curle=" - 'curl' command not found."
-    curlep="curl"
+    curle=" - 'curl' command not found.\n\n"
+    curlep="curl "
     export requiredep=1
 fi
 
 if ! command -v jq &> /dev/null
 then
-    jq=" - 'jq' command not found."
-    jqp="jq"
+    jq=" - 'jq' command not found.\n\n"
+    jqp="jq "
     export requiredep=1
 fi
 
 if ! command -v aria2c &> /dev/null
 then
-    aria2c=" - 'aria2c' command not found."
-    aria2p="aria2"
+    aria2c=" - 'aria2c' command not found.\n\n"
+    aria2p="aria2 "
     export requiredep=1
 fi
 
 if ! command -v cabextract &> /dev/null
 then
-    cabextract=" - 'cabextract' command not found."
-    cabextractp="cabextract"
+    cabextract=" - 'cabextract' command not found.\n\n"
+    cabextractp="cabextract "
     export requiredep=1
 fi
 
 if ! command -v chntpw &> /dev/null
 then
-    chntpw=" - 'chntpw' command not found."
-    chntpwp="chntpw"
+    chntpw=" - 'chntpw' command not found.\n\n"
+    chntpwp="chntpw "
     export requiredep=1
 fi
 
 if ! command -v mkisofs &> /dev/null && ! command -v genisoimage &> /dev/null
 then
-    mkisofs=" - 'genisoimage or mkisofs' command not found."
-    mkisofsdeb="genisoimage"
+    mkisofs=" - 'genisoimage or mkisofs' command not found.\n\n"
+    mkisofsdeb="genisoimage "
     export requiredep=1
 fi
 
 if [[ $requiredep == *"1"* ]]; then
-    zenity --title "workli" --info --ok-label="Exit" --text "Dependencies\n$curle\n$jq\n$aria2c\n$cabextract\n$chntpw\n$mkisofs\n\nInstall them:\n\nFor Debaian and Ubuntu, run 'sudo apt install $curlep $jqp $aria2p $cabextractp $chntpwp $mkisofsdeb'\n\nFor Arch, run 'sudo pacman -S $curlep $jqp $aria2p $cabextractp $chntpwp $mkisofsarmc'"
+    zenity --title "workli" --info --ok-label="Exit" --text "Dependencies:\n\n$curle$jq$aria2c$cabextract$chntpw$mkisofs\nInstall them:\n\nFor Debaian and Ubuntu, run 'sudo apt install $curlep$jqp$aria2p$cabextractp$chntpwp$mkisofsdeb'\n\nFor Arch, run 'sudo pacman -S $curlep$jqp$aria2p$cabextractp$chntpwp$mkisofsarmc'"
     exit 1
 else
     debug "All dependencies are met!"
