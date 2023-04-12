@@ -25,42 +25,42 @@ error() {
 
 if ! command -v wimupdate &> /dev/null
 then
-    wimtool=" - 'wimtools/wimlib' package not installed."
-    wimtoold="wimtools"
-    wimtoola="wimlib"
+    wimtool=" - 'wimtools/wimlib' package not installed.\n\n"
+    wimtoold="wimtools "
+    wimtoola="wimlib "
     export requiredep=1
 fi
 
 if ! command -v parted &> /dev/null
 then
-    parted=" - 'parted' package not installed."
-    partedp="parted"
+    parted=" - 'parted' package not installed.\n\n"
+    partedp="parted "
     export requiredep=1
 fi
 
 if ! command -v mkfs.ntfs &> /dev/null
 then
-    exfat=" - 'mkfs.ntfs' command not found."
-    ntfsp="ntfs-3g"
+    exfat=" - 'mkfs.ntfs' command not found.\n\n"
+    ntfsp="ntfs-3g "
     export requiredep=1
 fi
 
 if ! command -v gawk &> /dev/null
 then
-    gawk=" - 'gawk' package not installed."
-    gawkp="gawk"
+    gawk=" - 'gawk' package not installed.\n\n"
+    gawkp="gawk "
     export requiredep=1
 fi
 
 if ! command -v xmlstarlet &> /dev/null
 then
-    xmlstarle=" - 'xmlstarlet' package not installed."
-    xmartletp="xmlstarlet"
+    xmlstarle=" - 'xmlstarlet' package not installed.\n\n"
+    xmartletp="xmlstarlet "
     export requiredep=1
 fi
 
 if [[ $requiredep == *"1"* ]]; then
-    zenity --title "workli" --info --ok-label="Exit" --text "Mandatory dependencies:\n\n$wimtool\n\n$parted\n\n$exfat\n\n$gawk\n\n$xmlstarle\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wimtoold $partedp $ntfsp $gawkp $xmlstarletp\"\n\nFor Arch, run: \"sudo pacman -S $wimtoola $partedp $ntfsp $gawkp $xmlstarletp\""
+    zenity --title "workli" --info --ok-label="Exit" --text "Mandatory dependencies:\n\n$wimtool$parted$exfat$gawk$xmlstarle\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wimtoold$partedp$ntfsp$gawkp$xmlstarletp\"\n\nFor Arch, run: \"sudo pacman -S $wimtoola$partedp$ntfsp$gawkp$xmlstarletp\""
     exit 1
 else
     debug "All mandatory dependencies are met!"
@@ -68,40 +68,40 @@ fi
 
 if ! command -v wget &> /dev/null
 then
-    wgeta=" - 'wget' package not installed (used for boot files and UEFI files downloading)."
-    wgetp="wget"
+    wgeta=" - 'wget' package not installed (used for boot files and UEFI files downloading).\n\n"
+    wgetp="wget "
     export requiredep=1
 fi
 
 if ! command -v aria2c &> /dev/null
 then
-    aria=" - 'aria2c' package not installed (used for ESD downloading)."
-    ariap="aria2"
+    aria=" - 'aria2c' package not installed (used for ESD downloading).\n\n"
+    ariap="aria2 "
     export requiredep=1
 fi
 
 if ! command -v curl &> /dev/null
 then
-    curle=" - 'curl' package not installed (used for ESD downloading)."
-    curlp="curl"
+    curle=" - 'curl' package not installed (used for ESD downloading).\n\n"
+    curlp="curl "
     export requiredep=1
 fi
 
 if ! command -v jq &> /dev/null
 then
-    jqe=" - 'jq' package not installed (used for UEFI image downloading)."
-    jqp="jq"
+    jqe=" - 'jq' package not installed (used for UEFI image downloading).\n\n"
+    jqp="jq "
     export requiredep=1
 fi
 
 if ! command -v rkdeveloptool &> /dev/null
 then
-    rkdevtoola=" - 'rkdeveloptool' package not installed (used for UEFI spi flashing). Install it (some distros may not have it yet, in that case you'd need to <a href='https://opensource.rock-chips.com/wiki_Rkdeveloptool'>compile it</a>"
+    rkdevtoola=" - 'rkdeveloptool' package not installed (used for UEFI spi flashing). Install it (some distros may not have it yet, in that case you'd need to <a href='https://opensource.rock-chips.com/wiki_Rkdeveloptool'>compile it</a>\n\n"
     export requiredep=1
 fi
 
 if [[ $requiredep == *"1"* ]]; then
-    zenity --title "workli" --info --ok-label="Continue" --text "Optional dependencies:\n\n$wgeta\n\n$aria\n\n$curle\n\n$jqe\n\n$rkdevtoola\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wgetp $ariap $curlp $jqp\"\n\nFor Arch, run: \"sudo pacman -S $wgetp $ariap $curlp $jqp\""
+    zenity --title "workli" --info --ok-label="Continue" --text "Optional dependencies:\n\n$wgeta$aria$curle$jqe$rkdevtoola\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wgetp$ariap$curlp$jqp\"\n\nFor Arch, run: \"sudo pacman -S $wgetp$ariap$curlp$jqp\""
 else
     debug "All optional dependencies are met!"
 fi
