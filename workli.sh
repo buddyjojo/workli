@@ -278,7 +278,7 @@ case $? in
         exit 1
     fi
 
-    zenity --question --title="workli" --text "Do you want the tool to download the spl loader automatically? Press 'No' to use your own files"
+    zenity --question --title="workli" --text "Do you want the tool to download the SPL loader automatically? Press 'No' to use your own files"
 
     case $? in
         [0])
@@ -943,7 +943,7 @@ else
    error "'$disk' does not exist."
 fi
 
-zenity --question --title="workli" --text '<span color=\"red\">WARNING: THE DISK '$disk' WILL BE WIPED!</span>\nDo you want to continue?' --ok-label="No" --cancel-label="Yes"
+zenity --question --title="workli" --text '<span color=\"red\">WARNING: THE DISK '$disk' WILL BE WIPED!</span>\n\nDo you want to continue?' --ok-label="No" --cancel-label="Yes"
 
 case $? in
     [1])
