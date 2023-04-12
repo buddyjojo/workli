@@ -54,13 +54,13 @@ fi
 
 if ! command -v xmlstarlet &> /dev/null
 then
-    xmlstarlet=" - 'xmlstarlet' package not installed."
+    xmlstarle=" - 'xmlstarlet' package not installed."
     xmartletp="xmlstarlet"
     export requiredep=1
 fi
 
 if [[ $requiredep == *"1"* ]]; then
-    zenity --title "workli" --info --ok-label="Exit" --text "Mandatory dependencies:\n\n$wimtool\n\n$parted\n\n$exfat\n\n$gawk\n\n$xmlstarlet\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wimtoold $partedp $ntfsp $gawkp $xmlstarletp\"\n\nFor Arch, run: \"sudo pacman -S $wimtoola $partedp $ntfsp $gawkp $xmlstarletp\""
+    zenity --title "workli" --info --ok-label="Exit" --text "Mandatory dependencies:\n\n$wimtool\n\n$parted\n\n$exfat\n\n$gawk\n\n$xmlstarle\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wimtoold $partedp $ntfsp $gawkp $xmlstarletp\"\n\nFor Arch, run: \"sudo pacman -S $wimtoola $partedp $ntfsp $gawkp $xmlstarletp\""
     exit 1
 else
     debug "All mandatory dependencies are met!"
@@ -106,7 +106,7 @@ else
     debug "All optional dependencies are met!"
 fi
 
-zenity --title "workli" --info --ok-label="Next" --text "WoRKli, made by JoJo Autoboy#1931\n\nNot really based off of Mario's <a href='https://worproject.com/guides/how-to-install/on-rockchip'>guide for installing Windows on RK3588 boards</a>"
+zenity --title "workli" --info --ok-label="Next" --text "WoRKli, made by JoJo Autoboy#1931\n\nNot really based off of Mario's WoR Linux <a href='https://worproject.com/guides/how-to-install/on-rockchip'>guide</a>"
 
 mkdir -p /tmp/workli/
 chmod 777 /tmp/workli/
@@ -123,7 +123,7 @@ case $? in
         exit 1
     fi
 
-    wget -O "/tmp/workli/bootaa64.efi" "https://github.com/pbatard/UEFI-ntfs/releases/latest/download/bootaa64.efi" || error "Failed to download bootaa64.efi from pbatard/UEFI-ntfs"
+    wget -O "/tmp/workli/bootaa64.efi" "https://github.com/pbatard/uefi-ntfs/releases/latest/download/bootaa64.efi" || error "Failed to download bootaa64.efi from pbatard/uefi-ntfs"
     wget -O "/tmp/workli/ntfs_aa64.efi" "https://github.com/pbatard/ntfs-3g/releases/latest/download/ntfs_aa64.efi" || error "Failed to download ntfs_aa64.efi from pbatard/ntfs-3g"
     wget -O "/tmp/workli/pe-files.zip" "https://github.com/buddyjojo/workli/releases/latest/download/y-pe-files.zip" || error "Failed to download y-pe-files.zip from buddyjojo/workli"
 
@@ -140,7 +140,7 @@ case $? in
 
     [1])
 
-    zenity --title "workli" --info --ok-label="Next" --text "Download UEFI-ntfs from\n<a href='https://github.com/pbatard/UEFI-ntfs/releases'>https://github.com/pbatard/UEFI-ntfs/releases</a>\n\nget the 'bootaa64.efi' file"
+    zenity --title "workli" --info --ok-label="Next" --text "Download uefi-ntfs from\n<a href='https://github.com/pbatard/uefi-ntfs/releases'>https://github.com/pbatard/uefi-ntfs/releases</a>\n\nget the 'bootaa64.efi' file"
 
     uefntf=$(zenity --title "workli" --entry --text "What's the path to 'bootaa64.efi'?\n\nE.g. '~/bootaa64.efi'")
 
@@ -198,11 +198,9 @@ zenity --question --title="workli" --text "Do you want to flash the UEFI bootloa
 
 case $? in
     [0])
-    # Placeholder
-    ;;
-esac
 
 zenity --question --title="workli" --text "Are you installing onto a Rock 5 or Orange Pi 5?" --ok-label="Rock" --cancel-label="Orange"
+
 case $? in
     [0])
     export device="rock"
@@ -405,7 +403,7 @@ case $? in
 
                 umount /dev/$disk*
 
-                dd if="$efi" of=/dev/$disk conv=fsync || error "failed to dd UEFI"
+                dd if="$efi" of=/dev/$disk conv=fsync || error "Failed to dd UEFI"
 
             ;;
             [1])
@@ -973,7 +971,7 @@ parted -s /dev/$disk mklabel gpt
 
 if [[ $UEFI == *"SD"* ]]; then
     debug "installing fully to sd"
-    dd if="$efi" of=/dev/$disk bs=512 seek=64 conv=fsync || error "failed to dd UEFI"
+    dd if="$efi" of=/dev/$disk bs=512 seek=64 conv=fsync || error "Failed to dd UEFI"
     parted -s /dev/$disk mkpart primary 8MB 128MB
 else
     parted -s /dev/$disk mkpart primary 1MB 128MB
