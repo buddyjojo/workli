@@ -234,15 +234,13 @@ case $? in
         debug "Orange Pi UEFI selected"
 
         efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "orange")"
-
-        wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
     else
         debug "Rock 5 UEFI selected"
 
         efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "rock")"
-
-        wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
     fi
+    
+    wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
 
     efi="/tmp/workli/RK3588_NOR_FLASH_REL.img"
 
