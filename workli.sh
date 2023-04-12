@@ -115,8 +115,8 @@ fi
 
 zenity --title "workli" --info --ok-label="Next" --text "WoRKli, made by JoJo Autoboy#1931\n\nNot really based off of Mario's WoR Linux <a href='https://worproject.com/guides/how-to-install/on-rockchip'>guide</a>"
 
-mkdir -p $worklitmp/
-chmod 777 $worklitmp/
+mkdir -p "$worklitmp/"
+chmod 777 "$worklitmp/"
 
 zenity --question --title="workli" --text "Do you want the tool to download the PE setup script/batchexec and ntfs bootloader automatically? Press 'No' to use your own files"
 
@@ -134,7 +134,7 @@ case $? in
     wget -O "$uefntfd" "https://github.com/pbatard/ntfs-3g/releases/latest/download/ntfs_aa64.efi" || error "Failed to download ntfs_aa64.efi from pbatard/ntfs-3g"
     wget -O "$filepefiles" "https://github.com/buddyjojo/workli/releases/latest/download/y-pe-files.zip" || error "Failed to download y-pe-files.zip from buddyjojo/workli"
 
-    unzip -o $filepefiles -d $worklitmp/
+    unzip -o "$filepefiles" -d "$worklitmp/"
 
     export pei="$worklitmp/worklipe.cmd"
     export bexec="$worklitmp/batchexec.exe"
@@ -526,8 +526,8 @@ case $? in
 esac
 
 if [[ $tmpuupvar == "Download ESD in /tmp" ]]; then
-    mkdir $worklitmp/tmpesd
-    export esdpth=$worklitmp/tmpesd
+    export esdpth="$worklitmp/tmpesd"
+    mkdir "$esdpth"
     export tmpesd=1
 fi
 
@@ -729,8 +729,8 @@ case $? in
 esac
 
 if [[ $tmpuupvar == "Generate ISO in /tmp" ]]; then
-    mkdir $worklitmp/tmpuup
-    uuproot=$worklitmp/tmpuup
+    uuproot="$worklitmp/tmpuup"
+    mkdir "$uuproot"
     export tmpuup=1
 fi
 
@@ -810,14 +810,14 @@ fi
 
 zenity --title "workli" --info --ok-label="Next" --text "Prerequisites\n\n- Get the windows ESD/ISO: <a href='https://worproject.com/guides/getting-windows-images'>https://worproject.com/guides/getting-windows-images</a>\n\n- Rename the ESD/ISO file to 'win.iso' or 'win.esd'\n\n- If you want use use a modified install.wim, rename it to 'install.wim'\n\n<span color=\"red\">DO THE PREREQUISITES BEFORE CONTINUING</span>"
 
-if [[ -f $(pwd)/win.esd ]] || [[ -f $worklitmp/tmpesd/win.esd ]] ; then
+if [[ -f $(pwd)/win.esd ]] || [[ -f "$worklitmp/tmpesd/win.esd" ]] ; then
 
 zenity --question --title="workli" --text "Previously downloaded ESD found, would you like to use that or use another one?"
 
 case $? in
     [0])
 
-    if [[ -f $worklitmp/tmpesd/win.esd ]]; then
+    if [[ -f "$worklitmp/tmpesd/win.esd" ]]; then
         iso="$worklitmp/tmpesd/win.esd"
         export esd=1
     else
@@ -849,7 +849,7 @@ fi
     ;;
 esac
 
-if [[ -f $iso ]]; then
+if [[ -f "$iso" ]]; then
     debug "'win.iso/install.wim/win.esd' found"
 else
     error "'win.iso/install.wim/win.esd' does not exist. The iso variable was set to '$iso'"
@@ -872,16 +872,16 @@ else
 
     debug "Mounting ISO for type selection"
 
-    mkdir -p $worklitmp/isomount
-    chmod 777 $worklitmp/isomount
+    mkdir -p "$worklitmp/isomount"
+    chmod 777 "$worklitmp/isomount"
 
-    mount $iso $worklitmp/isomount
+    mount "$iso" "$worklitmp/isomount"
 
-    typexml=$(wiminfo --xml $worklitmp/isomount/sources/install.* | xmlstarlet fo)
+    typexml=$(wiminfo --xml "$worklitmp/isomount/sources/install.*" | xmlstarlet fo)
 
-    umount $worklitmp/isomount
+    umount "$worklitmp/isomount"
 
-    rm -rf $worklitmp/isomount
+    rm -rf "$worklitmp/isomount"
 fi
 
 windtype=$(echo "$typexml"  | xmlstarlet sel -t -v /WIM/IMAGE/NAME | gawk '{ printf "FALSE""\0"$0"\0" }' | sed 's/\(.*\)FALSE/\1TRUE/' |zenity --list --title="workli" --text="What windows type do you want?\n\nNote: some windows types may not be bootable" --radiolist --multiple --column ' ' --column 'Windows type' --width=300 --height=300)
@@ -1001,65 +1001,65 @@ debug "Copying Windows files to the drive."
 
 if [[ $fulliso == *"1"* ]]; then
 
-    mkdir -p $worklitmp/isomount
-    chmod 777 $worklitmp/isomount
+    mkdir -p "$worklitmp/isomount"
+    chmod 777 "$worklitmp/isomount"
 
-    mount $iso $worklitmp/isomount
+    mount "$iso" "$worklitmp/isomount"
 
-    wimapply --check $worklitmp/isomount/sources/install.* $wintype /dev/$nisk'2' >&2
+    wimapply --check "$worklitmp/isomount/sources/install.*" $wintype /dev/$nisk'2' >&2
 
-    umount $worklitmp/isomount
+    umount "$worklitmp/isomount"
 
-    rm -rf $worklitmp/isomount
+    rm -rf "$worklitmp/isomount"
 
 else
-    wimapply --check $iso $wintype /dev/$nisk'2' >&2
+    wimapply --check "$iso" $wintype /dev/$nisk'2' >&2
 fi
 
 echo "40"
 
 echo "# Mounting partitions..."
 
-mkdir -p $worklitmp/bootpart $worklitmp/winpart
+mkdir -p "$worklitmp/bootpart" "$worklitmp/winpart"
 
-mount /dev/$nisk'1' $worklitmp/bootpart
-mount /dev/$nisk'2' $worklitmp/winpart
+mount /dev/$nisk'1' "$worklitmp/bootpart"
+mount /dev/$nisk'2' "$worklitmp/winpart"
 
 echo "50"
 
 echo "# Copying boot files..."
 
-mkdir -p $worklitmp/bootpart/EFI/Boot/
-mkdir -p $worklitmp/bootpart/EFI/Rufus/
+mkdir -p "$worklitmp/bootpart/EFI/Boot/"
+mkdir -p "$worklitmp/bootpart/EFI/Rufus/"
 
 debug "${uefntf}, ${uefntfd}"
 
-cp ${uefntf} $worklitmp/bootpart/EFI/Boot/
-cp ${uefntfd} $worklitmp/bootpart/EFI/Rufus/
+cp ${uefntf} "$worklitmp/bootpart/EFI/Boot/"
+cp ${uefntfd} "$worklitmp/bootpart/EFI/Rufus/"
 
-mkdir -p $worklitmp/winpart/EFI/Boot/
-mkdir -p $worklitmp/winpart/EFI/Microsoft/Boot/Resources
+mkdir -p "$worklitmp/winpart/EFI/Boot/"
+mkdir -p "$worklitmp/winpart/EFI/Microsoft/Boot/Resources"
 
-cp $worklitmp/winpart/Windows/Boot/EFI/bootmgfw.efi $worklitmp/winpart/EFI/Boot/bootaa64.efi
-cp ${bcd} $worklitmp/winpart/EFI/Microsoft/Boot/BCD
-cp $worklitmp/winpart/Windows/Boot/EFI/winsipolicy.p7b $worklitmp/winpart/EFI/Microsoft/Boot/winsipolicy.p7b
-cp $worklitmp/winpart/Windows/Boot/Resources/bootres.dll $worklitmp/winpart/EFI/Microsoft/Boot/Resources/bootres.dll
-cp -r $worklitmp/winpart/Windows/Boot/EFI/CIPolicies $worklitmp/winpart/EFI/Microsoft/Boot/
-cp -r $worklitmp/winpart/Windows/Boot/Fonts $worklitmp/winpart/EFI/Microsoft/Boot/
+cp "$worklitmp/winpart/Windows/Boot/EFI/bootmgfw.efi" "$worklitmp/winpart/EFI/Boot/bootaa64.efi"
+cp ${bcd} "$worklitmp/winpart/EFI/Microsoft/Boot/BCD"
+cp "$worklitmp/winpart/Windows/Boot/EFI/winsipolicy.p7b" "$worklitmp/winpart/EFI/Microsoft/Boot/winsipolicy.p7b"
+cp "$worklitmp/winpart/Windows/Boot/Resources/bootres.dll" "$worklitmp/winpart/EFI/Microsoft/Boot/Resources/bootres.dll"
+cp -r "$worklitmp/winpart/Windows/Boot/EFI/CIPolicies" "$worklitmp/winpart/EFI/Microsoft/Boot/"
+cp -r "$worklitmp/winpart/Windows/Boot/Fonts" "$worklitmp/winpart/EFI/Microsoft/Boot/"
 
 echo "60"
 
 echo "# Editing WinRE..."
 
-winrewim=$(find $worklitmp/winpart/Windows/System32/Recovery/ -type f -name [Ww]inre.wim)
+winrewim=$(find "$worklitmp/winpart/Windows/System32/Recovery/" -type f -name [Ww]inre.wim)
 
-cp $winrewim $worklitmp/winpart/Windows/System32/Recovery/backup-winre.wim
+cp "$winrewim" "$worklitmp/winpart/Windows/System32/Recovery/backup-winre.wim"
 
-wimupdate $winrewim 1 --command="add ${pei} /worklipe.cmd"
+wimupdate "$winrewim" 1 --command="add ${pei} /worklipe.cmd"
 
-wimupdate $winrewim 1 --command="delete /sources/recovery/RecEnv.exe"
+wimupdate "$winrewim" 1 --command="delete /sources/recovery/RecEnv.exe"
 
-wimupdate $winrewim 1 --command="add ${bexec} /sources/recovery/RecEnv.exe"
+wimupdate "$winrewim" 1 --command="add ${bexec} /sources/recovery/RecEnv.exe"
 
 echo "80"
 echo "# Unmounting drive...\n\nThis may also take a while..."
@@ -1072,16 +1072,16 @@ umount /dev/$disk*
 echo "90"
 echo "# Cleaning up..."
 
-rm -rf $worklitmp/
+rm -rf "$worklitmp/"
 
 if [[ $deluup == *"1"* ]]; then
-    rm -rf $uuproot/uup
+    rm -rf "$uuproot/uup"
 else
     debug "UUPs set to not be deleted"
 fi
 
 if [[ $delesd == *"1"* ]]; then
-    rm -rf $esdpth
+    rm -rf "$esdpth"
 else
     debug "ESD set to not be deleted"
 fi
