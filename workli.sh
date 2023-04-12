@@ -409,7 +409,7 @@ case $? in
                 
                 umount /dev/$disk*
                 
-                dd if="$efi" of=/dev/$disk conv=fsync || error "failed to dd uefi"
+                dd if="$efi" of=/dev/$disk bs=512 seek=64 conv=fsync || error "failed to dd uefi"
             
             ;;
             [1])
