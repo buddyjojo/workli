@@ -28,79 +28,80 @@ then
     wimtool=" - 'wimtools/wimlib' package not installed."
     wimtoold="wimtools"
     wimtoola="wimlib"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v parted &> /dev/null
 then
     parted=" - 'parted' package not installed."
     partedp="parted"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v mkfs.ntfs &> /dev/null
 then
     exfat=" - 'mkfs.ntfs' command not found."
     ntfsp="ntfs-3g"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v gawk &> /dev/null
 then
     gawk=" - 'gawk' package not installed."
     gawkp="gawk"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v xmlstarlet &> /dev/null
 then
     xmlstarle=" - 'xmlstarlet' package not installed."
     xmartletp="xmlstarlet"
-    export requiredep=1
+    export reqdep=1
 fi
 
-if [[ $requiredep == *"1"* ]]; then
+if [[ $reqdep == *"1"* ]]; then
     zenity --title "workli" --info --ok-label="Exit" --text "Mandatory dependencies:\n\n$wimtool\n\n$parted\n\n$exfat\n\n$gawk\n\n$xmlstarle\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wimtoold $partedp $ntfsp $gawkp $xmlstarletp\"\n\nFor Arch, run: \"sudo pacman -S $wimtoola $partedp $ntfsp $gawkp $xmlstarletp\""
     exit 1
 else
     debug "All mandatory dependencies are met!"
 fi
 
+# Check optional dependencies
 if ! command -v wget &> /dev/null
 then
     wgeta=" - 'wget' package not installed (used for boot files and UEFI files downloading)."
     wgetp="wget"
-    export requiredep=1
+    export optdep=1
 fi
 
 if ! command -v aria2c &> /dev/null
 then
     aria=" - 'aria2c' package not installed (used for ESD downloading)."
     ariap="aria2"
-    export requiredep=1
+    export optdep=1
 fi
 
 if ! command -v curl &> /dev/null
 then
     curle=" - 'curl' package not installed (used for ESD downloading)."
     curlp="curl"
-    export requiredep=1
+    export optdep=1
 fi
 
 if ! command -v jq &> /dev/null
 then
     jqe=" - 'jq' package not installed (used for UEFI image downloading)."
     jqp="jq"
-    export requiredep=1
+    export optdep=1
 fi
 
 if ! command -v rkdeveloptool &> /dev/null
 then
     rkdevtoola=" - 'rkdeveloptool' package not installed (used for UEFI spi flashing). Install it (some distros may not have it yet, in that case you'd need to <a href='https://opensource.rock-chips.com/wiki_Rkdeveloptool'>compile it</a>"
-    export requiredep=1
+    export optdep=1
 fi
 
-if [[ $requiredep == *"1"* ]]; then
+if [[ $optdep == *"1"* ]]; then
     zenity --title "workli" --info --ok-label="Continue" --text "Optional dependencies:\n\n$wgeta\n\n$aria\n\n$curle\n\n$jqe\n\n$rkdevtoola\n\nInstall them:\n\nFor Debian and Ubuntu, run: \"sudo apt install $wgetp $ariap $curlp $jqp\"\n\nFor Arch, run: \"sudo pacman -S $wgetp $ariap $curlp $jqp\""
 else
     debug "All optional dependencies are met!"
@@ -111,6 +112,7 @@ zenity --title "workli" --info --ok-label="Next" --text "WoRKli, made by JoJo Au
 mkdir -p /tmp/workli/
 chmod 777 /tmp/workli/
 
+# Credit
 zenity --question --title="workli" --text "Do you want the tool to download the PE setup script/batchexec and ntfs bootloader automatically? Press 'No' to use your own files"
 
 case $? in
@@ -440,16 +442,16 @@ case $dwnopt in
 if ! command -v aria2c &> /dev/null
 then
     aria=" - 'aria2c' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install aria2'; for Arch, run 'sudo pacman -S aria2')"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v curl &> /dev/null
 then
     curle=" - 'curl' package not installed. Install it (For Debian and Ubuntu, run 'sudo apt install curl'; for Arch, run 'sudo pacman -S curl')"
-    export requiredep=1
+    export reqdep=1
 fi
 
-if [[ $requiredep == *"1"* ]]; then
+if [[ $reqdep == *"1"* ]]; then
     zenity --title "workli" --info --ok-label="Exit" --text "Dependencies\n\n$aria\n\n$curle"
     exit 1
 else
@@ -589,45 +591,45 @@ if ! command -v curl &> /dev/null
 then
     curle=" - 'curl' command not found."
     curlep="curl"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v jq &> /dev/null
 then
     jq=" - 'jq' command not found."
     jqp="jq"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v aria2c &> /dev/null
 then
     aria2c=" - 'aria2c' command not found."
     aria2p="aria2"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v cabextract &> /dev/null
 then
     cabextract=" - 'cabextract' command not found."
     cabextractp="cabextract"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v chntpw &> /dev/null
 then
     chntpw=" - 'chntpw' command not found."
     chntpwp="chntpw"
-    export requiredep=1
+    export reqdep=1
 fi
 
 if ! command -v mkisofs &> /dev/null && ! command -v genisoimage &> /dev/null
 then
     mkisofs=" - 'genisoimage or mkisofs' command not found."
     mkisofsdeb="genisoimage"
-    export requiredep=1
+    export reqdep=1
 fi
 
-if [[ $requiredep == *"1"* ]]; then
+if [[ $reqdep == *"1"* ]]; then
     zenity --title "workli" --info --ok-label="Exit" --text "Dependencies\n$curle\n$jq\n$aria2c\n$cabextract\n$chntpw\n$mkisofs\n\nInstall them:\n\nFor Debaian and Ubuntu, run 'sudo apt install $curlep $jqp $aria2p $cabextractp $chntpwp $mkisofsdeb'\n\nFor Arch, run 'sudo pacman -S $curlep $jqp $aria2p $cabextractp $chntpwp $mkisofsarmc'"
     exit 1
 else
