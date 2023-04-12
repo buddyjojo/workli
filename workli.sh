@@ -1,5 +1,12 @@
 #!/bin/bash
-
+# set default value
+export worklitmp="/tmp/workli"
+export uefntf="$worklitmp/bootaa64.efi"
+export uefntfd="$worklitmp/ntfs_aa64.efi"
+export filepefiles="$worklitmp/pe-files.zip"
+export efi="$worklitmp/RK3588_NOR_FLASH_REL.img"
+export spload="$worklitmp/rk3588_spl_loader_v1.08.111.bin"
+#
 if [[ $DEBUG == *"1"* ]]; then
     set -x
 fi
@@ -108,8 +115,8 @@ fi
 
 zenity --title "workli" --info --ok-label="Next" --text "WoRKli, made by JoJo Autoboy#1931\n\nNot really based off of Mario's WoR Linux <a href='https://worproject.com/guides/how-to-install/on-rockchip'>guide</a>"
 
-mkdir -p /tmp/workli/
-chmod 777 /tmp/workli/
+mkdir -p $worklitmp/
+chmod 777 $worklitmp/
 
 zenity --question --title="workli" --text "Do you want the tool to download the PE setup script/batchexec and ntfs bootloader automatically? Press 'No' to use your own files"
 
@@ -123,17 +130,15 @@ case $? in
         exit 1
     fi
 
-    wget -O "/tmp/workli/bootaa64.efi" "https://github.com/pbatard/uefi-ntfs/releases/latest/download/bootaa64.efi" || error "Failed to download bootaa64.efi from pbatard/uefi-ntfs"
-    wget -O "/tmp/workli/ntfs_aa64.efi" "https://github.com/pbatard/ntfs-3g/releases/latest/download/ntfs_aa64.efi" || error "Failed to download ntfs_aa64.efi from pbatard/ntfs-3g"
-    wget -O "/tmp/workli/pe-files.zip" "https://github.com/buddyjojo/workli/releases/latest/download/y-pe-files.zip" || error "Failed to download y-pe-files.zip from buddyjojo/workli"
+    wget -O "$uefntf" "https://github.com/pbatard/uefi-ntfs/releases/latest/download/bootaa64.efi" || error "Failed to download bootaa64.efi from pbatard/uefi-ntfs"
+    wget -O "$uefntfd" "https://github.com/pbatard/ntfs-3g/releases/latest/download/ntfs_aa64.efi" || error "Failed to download ntfs_aa64.efi from pbatard/ntfs-3g"
+    wget -O "$filepefiles" "https://github.com/buddyjojo/workli/releases/latest/download/y-pe-files.zip" || error "Failed to download y-pe-files.zip from buddyjojo/workli"
 
-    unzip -o /tmp/workli/pe-files.zip -d /tmp/workli/
+    unzip -o $filepefiles -d $worklitmp/
 
-    export pei="/tmp/workli/worklipe.cmd"
-    export uefntf="/tmp/workli/bootaa64.efi"
-    export uefntfd="/tmp/workli/ntfs_aa64.efi"
-    export bexec="/tmp/workli/batchexec.exe"
-    export bcd="/tmp/workli/BCD"
+    export pei="$worklitmp/worklipe.cmd"
+    export bexec="$worklitmp/batchexec.exe"
+    export bcd="$worklitmp/BCD"
 
     export auto="1"
     ;;
@@ -238,9 +243,7 @@ case $? in
         efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "rock")"
     fi
     
-    wget -O "/tmp/workli/RK3588_NOR_FLASH_REL.img" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
-
-    efi="/tmp/workli/RK3588_NOR_FLASH_REL.img"
+    wget -O "$efi" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
 
     export auto="1"
     ;;
@@ -288,9 +291,8 @@ case $? in
                 exit 1
             fi
 
-            wget -O "/tmp/workli/rk3588_spl_loader_v1.08.111.bin" "https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin" || error "Failed to download rk3588_spl_loader_v1.08.111.bin"
+            wget -O "$spload" "https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin" || error "Failed to download rk3588_spl_loader_v1.08.111.bin"
 
-            spload="/tmp/workli/rk3588_spl_loader_v1.08.111.bin"
         ;;
         [1])
             zenity --title "workli" --info --ok-label="Next" --text "Download the 'rk3588_spl_loader_v1.08.111.bin' from:\n<a href='https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin'>https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin</a>'"
@@ -524,8 +526,8 @@ case $? in
 esac
 
 if [[ $tmpuupvar == "Download ESD in /tmp" ]]; then
-    mkdir /tmp/workli/tmpesd
-    export esdpth=/tmp/workli/tmpesd
+    mkdir $worklitmp/tmpesd
+    export esdpth=$worklitmp/tmpesd
     export tmpesd=1
 fi
 
@@ -727,16 +729,16 @@ case $? in
 esac
 
 if [[ $tmpuupvar == "Generate ISO in /tmp" ]]; then
-    mkdir /tmp/workli/tmpuup
-    uuproot=/tmp/workli/tmpuup
+    mkdir $worklitmp/tmpuup
+    uuproot=$worklitmp/tmpuup
     export tmpuup=1
 fi
 
-wget -O "/tmp/workli/UUP.zip" "https://uupdump.net/get.php?id=$updateid&pack=en-us&edition=professional&autodl=2" || error "Failed to download UUP.zip"
+wget -O "$worklitmp/UUP.zip" "https://uupdump.net/get.php?id=$updateid&pack=en-us&edition=professional&autodl=2" || error "Failed to download UUP.zip"
 
 export uupzip=1
 
-unzip "/tmp/workli/UUP.zip" -d "$uuproot/uup"
+unzip "$worklitmp/UUP.zip" -d "$uuproot/uup"
 
 zenity --question --title="workli" --text "UUP Dump is known to be unstable sometimes and may require multiple tries to sucessfully download all reqired files.\n\nTo combat this, do you want to enable auto retry? It will indefinitely rerun the UUP script until it succeeds.\n\nYou can stop this any time by pressing the cancel button on the 'progress' window or by ctrl+c'ing the terminal this script is running from"
 
@@ -808,15 +810,15 @@ fi
 
 zenity --title "workli" --info --ok-label="Next" --text "Prerequisites\n\n- Get the windows ESD/ISO: <a href='https://worproject.com/guides/getting-windows-images'>https://worproject.com/guides/getting-windows-images</a>\n\n- Rename the ESD/ISO file to 'win.iso' or 'win.esd'\n\n- If you want use use a modified install.wim, rename it to 'install.wim'\n\n<span color=\"red\">DO THE PREREQUISITES BEFORE CONTINUING</span>"
 
-if [[ -f $(pwd)/win.esd ]] || [[ -f /tmp/workli/tmpesd/win.esd ]] ; then
+if [[ -f $(pwd)/win.esd ]] || [[ -f $worklitmp/tmpesd/win.esd ]] ; then
 
 zenity --question --title="workli" --text "Previously downloaded ESD found, would you like to use that or use another one?"
 
 case $? in
     [0])
 
-    if [[ -f /tmp/workli/tmpesd/win.esd ]]; then
-        iso="/tmp/workli/tmpesd/win.esd"
+    if [[ -f $worklitmp/tmpesd/win.esd ]]; then
+        iso="$worklitmp/tmpesd/win.esd"
         export esd=1
     else
         iso="$(pwd)/win.esd"
@@ -870,16 +872,16 @@ else
 
     debug "Mounting ISO for type selection"
 
-    mkdir -p /tmp/workli/isomount
-    chmod 777 /tmp/workli/isomount
+    mkdir -p $worklitmp/isomount
+    chmod 777 $worklitmp/isomount
 
-    mount $iso /tmp/workli/isomount
+    mount $iso $worklitmp/isomount
 
-    typexml=$(wiminfo --xml /tmp/workli/isomount/sources/install.* | xmlstarlet fo)
+    typexml=$(wiminfo --xml $worklitmp/isomount/sources/install.* | xmlstarlet fo)
 
-    umount /tmp/workli/isomount
+    umount $worklitmp/isomount
 
-    rm -rf /tmp/workli/isomount
+    rm -rf $worklitmp/isomount
 fi
 
 windtype=$(echo "$typexml"  | xmlstarlet sel -t -v /WIM/IMAGE/NAME | gawk '{ printf "FALSE""\0"$0"\0" }' | sed 's/\(.*\)FALSE/\1TRUE/' |zenity --list --title="workli" --text="What windows type do you want?\n\nNote: some windows types may not be bootable" --radiolist --multiple --column ' ' --column 'Windows type' --width=300 --height=300)
@@ -999,16 +1001,16 @@ debug "Copying Windows files to the drive."
 
 if [[ $fulliso == *"1"* ]]; then
 
-    mkdir -p /tmp/workli/isomount
-    chmod 777 /tmp/workli/isomount
+    mkdir -p $worklitmp/isomount
+    chmod 777 $worklitmp/isomount
 
-    mount $iso /tmp/workli/isomount
+    mount $iso $worklitmp/isomount
 
-    wimapply --check /tmp/workli/isomount/sources/install.* $wintype /dev/$nisk'2' >&2
+    wimapply --check $worklitmp/isomount/sources/install.* $wintype /dev/$nisk'2' >&2
 
-    umount /tmp/workli/isomount
+    umount $worklitmp/isomount
 
-    rm -rf /tmp/workli/isomount
+    rm -rf $worklitmp/isomount
 
 else
     wimapply --check $iso $wintype /dev/$nisk'2' >&2
@@ -1018,40 +1020,40 @@ echo "40"
 
 echo "# Mounting partitions..."
 
-mkdir -p /tmp/workli/bootpart /tmp/workli/winpart
+mkdir -p $worklitmp/bootpart $worklitmp/winpart
 
-mount /dev/$nisk'1' /tmp/workli/bootpart
-mount /dev/$nisk'2' /tmp/workli/winpart
+mount /dev/$nisk'1' $worklitmp/bootpart
+mount /dev/$nisk'2' $worklitmp/winpart
 
 echo "50"
 
 echo "# Copying boot files..."
 
-mkdir -p /tmp/workli/bootpart/EFI/Boot/
-mkdir -p /tmp/workli/bootpart/EFI/Rufus/
+mkdir -p $worklitmp/bootpart/EFI/Boot/
+mkdir -p $worklitmp/bootpart/EFI/Rufus/
 
 debug "${uefntf}, ${uefntfd}"
 
-cp ${uefntf} /tmp/workli/bootpart/EFI/Boot/
-cp ${uefntfd} /tmp/workli/bootpart/EFI/Rufus/
+cp ${uefntf} $worklitmp/bootpart/EFI/Boot/
+cp ${uefntfd} $worklitmp/bootpart/EFI/Rufus/
 
-mkdir -p /tmp/workli/winpart/EFI/Boot/
-mkdir -p /tmp/workli/winpart/EFI/Microsoft/Boot/Resources
+mkdir -p $worklitmp/winpart/EFI/Boot/
+mkdir -p $worklitmp/winpart/EFI/Microsoft/Boot/Resources
 
-cp /tmp/workli/winpart/Windows/Boot/EFI/bootmgfw.efi /tmp/workli/winpart/EFI/Boot/bootaa64.efi
-cp ${bcd} /tmp/workli/winpart/EFI/Microsoft/Boot/BCD
-cp /tmp/workli/winpart/Windows/Boot/EFI/winsipolicy.p7b /tmp/workli/winpart/EFI/Microsoft/Boot/winsipolicy.p7b
-cp /tmp/workli/winpart/Windows/Boot/Resources/bootres.dll /tmp/workli/winpart/EFI/Microsoft/Boot/Resources/bootres.dll
-cp -r /tmp/workli/winpart/Windows/Boot/EFI/CIPolicies /tmp/workli/winpart/EFI/Microsoft/Boot/
-cp -r /tmp/workli/winpart/Windows/Boot/Fonts /tmp/workli/winpart/EFI/Microsoft/Boot/
+cp $worklitmp/winpart/Windows/Boot/EFI/bootmgfw.efi $worklitmp/winpart/EFI/Boot/bootaa64.efi
+cp ${bcd} $worklitmp/winpart/EFI/Microsoft/Boot/BCD
+cp $worklitmp/winpart/Windows/Boot/EFI/winsipolicy.p7b $worklitmp/winpart/EFI/Microsoft/Boot/winsipolicy.p7b
+cp $worklitmp/winpart/Windows/Boot/Resources/bootres.dll $worklitmp/winpart/EFI/Microsoft/Boot/Resources/bootres.dll
+cp -r $worklitmp/winpart/Windows/Boot/EFI/CIPolicies $worklitmp/winpart/EFI/Microsoft/Boot/
+cp -r $worklitmp/winpart/Windows/Boot/Fonts $worklitmp/winpart/EFI/Microsoft/Boot/
 
 echo "60"
 
 echo "# Editing WinRE..."
 
-winrewim=$(find /tmp/workli/winpart/Windows/System32/Recovery/ -type f -name [Ww]inre.wim)
+winrewim=$(find $worklitmp/winpart/Windows/System32/Recovery/ -type f -name [Ww]inre.wim)
 
-cp $winrewim /tmp/workli/winpart/Windows/System32/Recovery/backup-winre.wim
+cp $winrewim $worklitmp/winpart/Windows/System32/Recovery/backup-winre.wim
 
 wimupdate $winrewim 1 --command="add ${pei} /worklipe.cmd"
 
@@ -1070,7 +1072,7 @@ umount /dev/$disk*
 echo "90"
 echo "# Cleaning up..."
 
-rm -rf /tmp/workli/
+rm -rf $worklitmp/
 
 if [[ $deluup == *"1"* ]]; then
     rm -rf $uuproot/uup
