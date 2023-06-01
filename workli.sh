@@ -1,12 +1,25 @@
 #!/bin/bash
-# set default value
+
+# set default variables
+
 export worklitmp="/tmp/workli"
-export uefntf="$worklitmp/bootaa64.efi"
-export uefntfd="$worklitmp/ntfs_aa64.efi"
-export filepefiles="$worklitmp/pe-files.zip"
-export efi="$worklitmp/RK3588_NOR_FLASH_REL.img"
-export spload="$worklitmp/rk3588_spl_loader_v1.08.111.bin"
-#
+
+# uselocal="1" # uncomment for using local files instead of auto download (use alongside $cache after first run to use cached files from previous runs)
+
+# cache="1" # uncomment to not delete the tmp folder at the end (recommended to be used alongside $uselocal)
+
+export spload="$worklitmp/rk3588_spl_loader_v1.08.111.bin" # https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin
+export efi="$worklitmp/RK3588_NOR_FLASH_REL.img" # https://github.com/edk2-porting/edk2-rk35xx/releases
+
+export uefntf="$worklitmp/bootaa64.efi" # https://github.com/pbatard/uefi-ntfs/releases
+export uefntfd="$worklitmp/ntfs_aa64.efi" # https://github.com/pbatard/ntfs-3g/releases
+
+export pei="$worklitmp/worklipe.cmd" # https://github.com/buddyjojo/workli/tree/master/files
+export bexec="$worklitmp/batchexec.exe" # ^
+export bcd="$worklitmp/BCD" # ^
+
+export filepefiles="$worklitmp/pe-files.zip" # used for auto download only
+
 if [[ $DEBUG == *"1"* ]]; then
     set -x
 fi
@@ -118,12 +131,11 @@ zenity --title "workli" --info --ok-label="Next" --text "WoRKli, made by JoJo Au
 mkdir -p "$worklitmp/"
 chmod 777 "$worklitmp/"
 
-zenity --question --title="workli" --text "Do you want the tool to download the PE setup script/batchexec and ntfs bootloader automatically? Press 'No' to use your own files"
+if [[ $uselocal == *"1"* ]]; then
 
-case $? in
+    debug "uselocal set to 1, skipping auto download..."
 
-    [0])
-
+else
     if ! command -v wget &> /dev/null
     then
         zenity --title "workli" --info --ok-label="Exit" --text "'wget' package not installed. Install it\n\nFor Debian and Ubuntu, run 'sudo apt install $wgetp'\n\nFor Arch, run 'sudo pacman -S $wgetp'\n\nFor macOS, run 'brew install $wgetp'"
@@ -136,37 +148,8 @@ case $? in
 
     unzip -o "$filepefiles" -d "$worklitmp/"
 
-    export pei="$worklitmp/worklipe.cmd"
-    export bexec="$worklitmp/batchexec.exe"
-    export bcd="$worklitmp/BCD"
-
     export auto="1"
-    ;;
-
-    [1])
-
-    zenity --title "workli" --info --ok-label="Next" --text "Download uefi-ntfs from\n<a href='https://github.com/pbatard/uefi-ntfs/releases'>https://github.com/pbatard/uefi-ntfs/releases</a>\n\nget the 'bootaa64.efi' file"
-
-    uefntf=$(zenity --title "workli" --entry --text "What's the path to 'bootaa64.efi'?\n\nE.g. '~/bootaa64.efi'")
-
-    zenity --title "workli" --info --ok-label="Next" --text "Download ntfs-3g from\n<a href='https://github.com/pbatard/ntfs-3g/releases'>https://github.com/pbatard/ntfs-3g/releases</a>\n\nget the 'ntfs_aa64.efi' file"
-
-    uefntfd=$(zenity --title "workli" --entry --text "What's the path to 'ntfs_aa64.efi'?\n\nE.g. '~/ntfs_aa64.efi'")
-
-    zenity --title "workli" --info --ok-label="Next" --text "Download/compile batchexec.exe, worklipe.cmd and 'bcd' (and gptpatch.img if installing to pi3) from\n\n<a href='https://github.com/buddyjojo/workli/tree/master/files'>https://github.com/buddyjojo/workli/tree/master/files</a>"
-
-    pei=$(zenity --title "workli" --entry --text "What's the path to 'worklipe.cmd'?\n\nE.g. '~/worklipe.cmd'")
-
-    bexec=$(zenity --title "workli" --entry --text "What's the path to 'batchexec.exe'?\n\nE.g. '~/batchexec.exe'")
-
-    bcd=$(zenity --title "workli" --entry --text "What's the path to 'bcd'?\n\nE.g. '~/bcd'")
-    ;;
-
-    *)
-
-    error "Invalid input"
-    ;;
-esac
+fi
 
 if [[ -f $uefntf ]]; then
     debug "'bootaa64.efi' found"
@@ -204,62 +187,28 @@ zenity --question --title="workli" --text "Do you want to flash the UEFI bootloa
 case $? in
     [0])
 
-zenity --question --title="workli" --text "Are you installing onto a Rock 5 or Orange Pi 5?" --ok-label="Rock" --cancel-label="Orange"
+if [[ $uselocal == *"1"* ]]; then
 
-case $? in
-    [0])
-    export device="rock"
-    ;;
+    debug "uselocal set to 1, skipping auto download..."
 
-    [1])
-    export device="orange"
-    ;;
-
-    *)
-    error "Invalid input"
-    exit 1
-    ;;
-esac
-
-zenity --question --title="workli" --text "Do you want the tool to download the UEFI automatically? Press 'No' to use your own files"
-
-case $? in
-
-    [0])
-
+else
     if ! command -v wget &> /dev/null
     then
         zenity --title "workli" --info --ok-label="Exit" --text "'wget' package not installed. Install it\n\nFor Debian and Ubuntu, run 'sudo apt install $wgetp'\n\nFor Arch, run 'sudo pacman -S $wgetp'\n\nFor macOS, run 'brew install $wgetp'"
         exit 1
     fi
-
-    if [[ $device == *"orange"* ]]; then
-        debug "Orange Pi UEFI selected"
-
-        efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "orange")"
-    else
-        debug "Rock 5 UEFI selected"
-
-        efiURL="$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest | jq -r '.assets[] | .browser_download_url' | grep "rock")"
-    fi
+    
+    gitjson=$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest)
+    
+    efiFILE=$(echo $gitjson | jq -r '.assets[] | .name' | gawk '{ printf "FALSE""\0"$0"\0" }' | xargs -0 zenity --list --title="workli" --text="What device do you have?\n\nNote: device support may vary and may not work\n\nOfficaly supported boards: Orange pi 5, Rock 5a" --radiolist --multiple --column ' ' --column 'Devices' --height=450)
+    
+    efiURL=$(echo $gitjson | jq --arg efifile "$efiFILE" -r '.assets[] | select( .name | match($efifile)) | .browser_download_url ')
     
     wget -O "$efi" "$efiURL" || error "Failed to download RK3588_NOR_FLASH_REL.img"
 
     export auto="1"
-    ;;
-
-    [1])
-
-    zenity --title "workli" --info --ok-label="Next" --text "Download the .img file (not the source code) from:\n<a href='https://github.com/edk2-porting/edk2-rk35xx/releases'>https://github.com/edk2-porting/edk2-rk35xx/releases</a>'"
-
-    efi=$(zenity --title "workli" --entry --text "What's the path to the .img file?\n\nE.g. '~/RK3588_NOR_FLASH_REL.img'")
-    ;;
-
-    *)
-
-    error "Invalid input"
-    ;;
-esac
+    
+fi
 
 if [[ -f $efi ]]; then
     debug "UEFI img found"
@@ -281,28 +230,19 @@ case $? in
         exit 1
     fi
 
-    zenity --question --title="workli" --text "Do you want the tool to download the SPL loader automatically? Press 'No' to use your own files"
+    if [[ $uselocal == *"1"* ]]; then
+    
+        debug "uselocal set to 1, skipping auto download..."
+    
+    else
+        if ! command -v wget &> /dev/null
+        then
+            zenity --title "workli" --info --ok-label="Exit" --text "'wget' package not installed. Install it\n\nFor Debian and Ubuntu, run 'sudo apt install $wgetp'\n\nFor Arch, run 'sudo pacman -S $wgetp'\n\nFor macOS, run 'brew install $wgetp'"
+            exit 1
+        fi
 
-    case $? in
-        [0])
-            if ! command -v wget &> /dev/null
-            then
-                zenity --title "workli" --info --ok-label="Exit" --text "'wget' package not installed. Install it\n\nFor Debian and Ubuntu, run 'sudo apt install $wgetp'\n\nFor Arch, run 'sudo pacman -S $wgetp'\n\nFor macOS, run 'brew install $wgetp'"
-                exit 1
-            fi
-
-            wget -O "$spload" "https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin" || error "Failed to download rk3588_spl_loader_v1.08.111.bin"
-
-        ;;
-        [1])
-            zenity --title "workli" --info --ok-label="Next" --text "Download the 'rk3588_spl_loader_v1.08.111.bin' from:\n<a href='https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin'>https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin</a>'"
-
-            spload=$(zenity --title "workli" --entry --text "What's the path to 'rk3588_spl_loader_v1.08.111.bin'?\n\nE.g. '~/rk3588_spl_loader_v1.08.111.bin'")
-        ;;
-        *)
-        exit 1
-        ;;
-    esac
+        wget -O "$spload" "https://dl.radxa.com/rock5/sw/images/loader/rock-5b/rk3588_spl_loader_v1.08.111.bin" || error "Failed to download rk3588_spl_loader_v1.08.111.bin"
+    fi
 
 
     if [[ -f $efi ]]; then
@@ -341,7 +281,7 @@ case $? in
     ;;
     [1])
 
-        zenity --question --title="workli" --text "Are you installing Windows to the same SD card or just using it for the bootloader?" --ok-label="Only bootloader" --cancel-label="Same SD"
+        zenity --question --title="workli" --text "Are you installing Windows to the same SD card or just using it for the bootloader?\n\n<span color=\"red\">NOTE: SAME SD OPTION CURRENTLY BROKEN\n\nSame sd requires custom uefi image</span>" --ok-label="Only bootloader" --cancel-label="Same SD"
 
         case $? in
             [0])
@@ -1072,7 +1012,12 @@ umount /dev/$disk*
 echo "90"
 echo "# Cleaning up..."
 
-rm -rf "$worklitmp/"
+if [[ $cache == *"1"* ]]; then
+    debug "cache set to 1, skipping tmp deletion"
+    debug "uncomment uselocal at top of script to use cached files"
+else
+    rm -rf "$worklitmp/"
+fi
 
 if [[ $deluup == *"1"* ]]; then
     rm -rf "$uuproot/uup"
