@@ -198,7 +198,7 @@ else
         exit 1
     fi
     
-    gitjson=$(curl https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest)
+    gitjson=$(curl -L https://api.github.com/repos/edk2-porting/edk2-rk35xx/releases/latest)
     
     efiFILE=$(echo $gitjson | jq -r '.assets[] | .name' | gawk '{ printf "FALSE""\0"$0"\0" }' | xargs -0 zenity --list --title="workli" --text="What device do you have?\n\nNote: device support may vary and may not work\n\nOfficaly supported boards: Orange pi 5, Rock 5a" --radiolist --multiple --column ' ' --column 'Devices' --height=450)
     
