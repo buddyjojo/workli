@@ -24,6 +24,8 @@ Required dependencies for UEFI flashing to SPI: [rkdeveloptool](https://opensour
 
 ## INSTRUCTIONS
 
+> NOTE: The Releases are probably outdatded due to frequent changes, please use the script in the repo or run 'sudo bash <(curl -s https://raw.githubusercontent.com/buddyjojo/workli/main/workli.sh)'
+
 1. Go to "Releases" and download the latest ["workli.sh"](https://github.com/buddyjojo/worli/releases/latest/download/workli.sh).
 
 2. Put the script into an empty folder **WITH NO SPACES IN ITS NAME**!
