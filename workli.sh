@@ -817,7 +817,9 @@ else
 
     mount "$iso" "$worklitmp/isomount"
 
-    typexml=$(wiminfo --xml "$worklitmp/isomount/sources/install.*" | xmlstarlet fo)
+    installwim=$(find "$worklitmp/isomount/sources/" -type f -name "install.wim" -o -name "install.esd")
+    
+    typexml=$(wiminfo --xml "$installwim" | xmlstarlet fo)
 
     umount "$worklitmp/isomount"
 
@@ -946,7 +948,9 @@ if [[ $fulliso == *"1"* ]]; then
 
     mount "$iso" "$worklitmp/isomount"
 
-    wimapply --check "$worklitmp/isomount/sources/install.*" $wintype /dev/$nisk'2' >&2
+    installwim=$(find "$worklitmp/isomount/sources/" -type f -name "install.wim" -o -name "install.esd")
+
+    wimapply --check "$installwim" $wintype /dev/$nisk'2' >&2
 
     umount "$worklitmp/isomount"
 
