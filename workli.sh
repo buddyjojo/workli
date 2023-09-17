@@ -281,7 +281,7 @@ case $? in
     ;;
     [1])
 
-        zenity --question --title="workli" --text "Are you installing Windows to the same SD card or just using it for the bootloader?\n\n<span color=\"red\">NOTE: SAME SD OPTION CURRENTLY BROKEN\n\nSame sd requires custom uefi image</span>" --ok-label="Only bootloader" --cancel-label="Same SD"
+        zenity --question --title="workli" --text "Are you installing Windows to the same SD card or just using it for the bootloader?" --ok-label="Only bootloader" --cancel-label="Same SD"
 
         case $? in
             [0])
@@ -915,7 +915,7 @@ parted -s /dev/$disk mklabel gpt
 
 if [[ $UEFI == *"SD"* ]]; then
     debug "installing fully to sd"
-    dd if="$efi" of=/dev/$disk bs=512 seek=64 conv=fsync || error "Failed to dd UEFI"
+    dd if="$efi" of=/dev/$disk bs=512 skip=64 seek=64 conv=notrunc || error "Failed to dd UEFI"
     parted -s /dev/$disk mkpart primary 8MB 128MB
 else
     parted -s /dev/$disk mkpart primary 1MB 128MB
