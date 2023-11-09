@@ -75,7 +75,7 @@ fi
 if ! command -v xmlstarlet &> /dev/null
 then
     xmlstarle=" - 'xmlstarlet' package not installed.\n\n"
-    xmartletp="xmlstarlet "
+    xmlstarletp="xmlstarlet "
     export reqdep=1
 fi
 
