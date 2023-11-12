@@ -12,7 +12,7 @@ Built for simplicity and compatibility.
 
 > NOTE: The script gives commands for debian/arch to install these dependencies, this is just a reference for other distros.
 
-Required dependencies: `zenity`, `wimupdate`, `wimapply` and `wiminfo` ([wimlib](https://wimlib.net/)), `parted`, `mk.ntfs` ([ntfs-3g](https://github.com/tuxera/ntfs-3g)), `zip`, `gawk`, `xmlstarlet`.
+Required dependencies: `zenity`, `wimupdate`, `wimapply` and `wiminfo` ([wimlib](https://wimlib.net/)/[wimtools](https://packages.debian.org/search?keywords=wimtools)), `parted`, `mk.ntfs` ([ntfs-3g](https://github.com/tuxera/ntfs-3g)), `zip`, `gawk`, `xmlstarlet`.
 
 Required dependencies for auto file downloads: `wget`.
 
@@ -24,7 +24,7 @@ Required dependencies for UEFI flashing to SPI: [rkdeveloptool](https://opensour
 
 ## INSTRUCTIONS
 
-> NOTE: The Releases are probably outdatded due to frequent changes, please use the script in the repo or run 'sudo bash <(curl -s https://raw.githubusercontent.com/buddyjojo/workli/main/workli.sh)'
+> NOTE: The Releases are probably outdatded due to frequent changes, please use the script in the repo or run 'curl https://raw.githubusercontent.com/buddyjojo/workli/main/workli.sh | sudo bash'
 
 1. Go to "Releases" and download the latest ["workli.sh"](https://github.com/buddyjojo/worli/releases/latest/download/workli.sh).
 
