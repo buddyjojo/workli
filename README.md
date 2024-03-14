@@ -1,6 +1,6 @@
 # workli
 
-<img src="https://cdn.discordapp.com/attachments/546129764440604705/1087991121621303447/workli.png" alt="alt text" title="logo made by fengzi, bastardized by me" width="128" height="128">
+<img src="[https://cdn.discordapp.com/attachments/546129764440604705/1087991121621303447/workli.png?ex=6603c131&is=65f14c31&hm=453547f1a6385f3fe679a5e72f7a11669f2ae3133c8e849c5f4e61677d254d1a&)" alt="alt text" title="logo made by fengzi, bastardized by me" width="128" height="128">
 
 ### Simple Windows on Rockchip Linux Installer. 
 
